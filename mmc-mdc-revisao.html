@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MMC e MDC — Revisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --p: #7c3aed;
+    --p2: #a78bfa;
+    --p-bg: #f5f3ff;
+    --p-light: #ede9fe;
+    --g: #059669;
+    --g-light: #d1fae5;
+    --pk: #db2777;
+    --pk-light: #fce7f3;
+    --am: #b45309;
+    --am-light: #fef3c7;
+    --tx: #1e1b4b;
+    --tx2: #6b7280;
+    --border: #e8e0ff;
+    --card-shadow: 0 4px 20px rgba(124,58,237,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--p-bg);
+    color: var(--tx);
+    min-height: 100vh;
+    padding-bottom: 32px;
+  }
+
+  /* ── HEADER ──────────────────────────────────── */
+  .header {
+    background: linear-gradient(145deg, #4c1d95, #7c3aed, #a855f7);
+    color: white;
+    padding: 24px 20px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 4px 24px rgba(109,40,217,0.35);
+  }
+  .header-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px; }
+  .header p  { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; font-weight: 400; }
+  .progress-wrap {
+    background: rgba(255,255,255,0.2);
+    height: 5px;
+    border-radius: 999px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: rgba(255,255,255,0.9);
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── TABS ────────────────────────────────────── */
+  .tab-bar {
+    background: white;
+    display: flex;
+    padding: 10px 12px;
+    gap: 6px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    position: sticky;
+    top: 110px;
+    z-index: 9;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--tx2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .tab-btn.active {
+    background: var(--p);
+    color: white;
+    box-shadow: 0 4px 12px rgba(124,58,237,0.35);
+  }
+
+  /* ── SECTION ─────────────────────────────────── */
+  .section { display: none; padding: 18px 16px; }
+  .section.active { display: block; animation: slideUp 0.3s ease; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARDS ───────────────────────────────────── */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--card-shadow);
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--tx);
+  }
+
+  /* ── HERO CARDS ──────────────────────────────── */
+  .hero-card {
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
+    color: white;
+  }
+  .hero-card.roxo { background: linear-gradient(135deg, #5b21b6, #7c3aed); box-shadow: 0 8px 24px rgba(124,58,237,0.3); }
+  .hero-card.verde { background: linear-gradient(135deg, #065f46, #059669); box-shadow: 0 8px 24px rgba(5,150,105,0.3); }
+  .hero-card h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+  .hero-card p  { font-size: 0.9rem; opacity: 0.9; line-height: 1.6; font-weight: 400; }
+
+  /* ── PILL BADGE ──────────────────────────────── */
+  .pill { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+  .pill-p  { background: var(--p-light);  color: var(--p); }
+  .pill-g  { background: var(--g-light);  color: var(--g); }
+  .pill-pk { background: var(--pk-light); color: var(--pk); }
+  .pill-am { background: var(--am-light); color: var(--am); }
+
+  /* ── INFO BOX ────────────────────────────────── */
+  .box { border-radius: 14px; padding: 14px 16px; margin: 10px 0; font-size: 0.9rem; line-height: 1.65; font-weight: 500; }
+  .box-p  { background: var(--p-light);  border-left: 3px solid var(--p); }
+  .box-g  { background: var(--g-light);  border-left: 3px solid var(--g); }
+  .box-pk { background: var(--pk-light); border-left: 3px solid var(--pk); }
+  .box-am { background: var(--am-light); border-left: 3px solid var(--am); }
+
+  /* ── NÚMERO CHIPS ─────────────────────────────── */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; align-items: center; }
+  .chip { padding: 5px 11px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; background: #f3f4f6; color: var(--tx2); }
+  .chip.on-p  { background: var(--p);  color: white; }
+  .chip.on-g  { background: var(--g);  color: white; }
+  .chip-label { font-weight: 800; font-size: 0.9rem; }
+
+  /* ── FATORAÇÃO VISUAL ─────────────────────────── */
+  .factor-wrap  { display: flex; gap: 20px; flex-wrap: wrap; margin: 12px 0; }
+  .factor-block { min-width: 100px; }
+  .factor-label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .fator-rows   { display: flex; flex-direction: column; gap: 2px; }
+  .fator-row    { display: flex; align-items: center; gap: 6px; }
+  .fator-num    { min-width: 34px; text-align: right; font-weight: 700; font-size: 0.95rem; font-family: 'Courier New', monospace; }
+  .fator-bar    { width: 2px; height: 26px; border-radius: 1px; background: var(--p); flex-shrink: 0; }
+  .fator-bar.g  { background: var(--g); }
+  .fator-f      { font-weight: 800; color: var(--p); font-size: 0.95rem; min-width: 24px; font-family: 'Courier New', monospace; }
+  .fator-f.g    { color: var(--g); }
+  .math-result  { background: #1e1b4b; color: white; border-radius: 10px; padding: 7px 12px; font-family: 'Courier New', monospace; font-size: 0.82rem; margin-top: 6px; font-weight: 600; }
+  .math-result .hl  { color: #c4b5fd; font-weight: 800; }
+  .math-result .hl2 { color: #6ee7b7; font-weight: 800; }
+
+  /* ── STEPS ───────────────────────────────────── */
+  .steps { display: flex; flex-direction: column; gap: 10px; }
+  .step  { display: flex; gap: 12px; align-items: flex-start; }
+  .step-dot {
+    min-width: 30px; height: 30px; border-radius: 50%;
+    background: var(--p); color: white; font-weight: 800; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.3);
+  }
+  .step-dot.g  { background: var(--g);  box-shadow: 0 2px 8px rgba(5,150,105,0.3); }
+  .step-dot.pk { background: var(--pk); box-shadow: 0 2px 8px rgba(219,39,119,0.3); }
+  .step-dot.emoji { background: transparent; box-shadow: none; font-size: 1.2rem; }
+  .step-body { flex: 1; font-size: 0.9rem; line-height: 1.6; font-weight: 500; padding-top: 4px; }
+
+  /* ── QUIZ ────────────────────────────────────── */
+  .quiz-q    { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; line-height: 1.55; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    padding: 13px 16px; border-radius: 14px; border: 2px solid var(--border);
+    background: white; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; text-align: left; color: var(--tx);
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .quiz-opt.ok  { background: var(--g-light);  border-color: var(--g);  color: #065f46; }
+  .quiz-opt.nok { background: var(--pk-light); border-color: var(--pk); color: #9d174d; }
+  .quiz-fb { margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.6; font-weight: 500; display: none; }
+  .quiz-fb.show { display: block; animation: slideUp 0.3s ease; }
+  .quiz-fb.ok  { background: var(--g-light);  color: #065f46; }
+  .quiz-fb.nok { background: var(--pk-light); color: #9d174d; }
+  .quiz-hint   { font-size: 0.78rem; color: var(--tx2); margin-top: 8px; font-weight: 500; }
+
+  /* ── REVEAL ──────────────────────────────────── */
+  .reveal-content { display: none; margin-top: 10px; animation: slideUp 0.35s ease; }
+  .reveal-content.show { display: block; }
+
+  /* ── BUTTONS ─────────────────────────────────── */
+  .btn {
+    display: block; width: 100%; padding: 14px; border-radius: 14px; border: none;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    transition: opacity 0.15s; margin-top: 10px; letter-spacing: 0.1px;
+    -webkit-user-select: none; user-select: none;
+  }
+  .btn:active { opacity: 0.8; }
+  .btn-p     { background: linear-gradient(135deg, #6d28d9, #7c3aed); color: white; box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+  .btn-g     { background: linear-gradient(135deg, #047857, #059669); color: white; box-shadow: 0 4px 14px rgba(5,150,105,0.3); }
+  .btn-pk    { background: linear-gradient(135deg, #be185d, #db2777); color: white; box-shadow: 0 4px 14px rgba(219,39,119,0.3); }
+  .btn-ghost { background: white; border: 2px solid var(--p); color: var(--p); }
+
+  /* ── PASSO BADGE ─────────────────────────────── */
+  .passo-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 14px 4px 4px; font-size: 0.8rem; font-weight: 800; margin-bottom: 12px; }
+  .passo-badge .num { width: 22px; height: 22px; border-radius: 50%; color: white; font-size: 0.72rem; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .pb-p  { background: var(--p-light);  color: var(--p);  } .pb-p  .num { background: var(--p); }
+  .pb-g  { background: var(--g-light);  color: var(--g);  } .pb-g  .num { background: var(--g); }
+  .pb-am { background: var(--am-light); color: var(--am); } .pb-am .num { background: var(--am); }
+  .pb-pk { background: var(--pk-light); color: var(--pk); } .pb-pk .num { background: var(--pk); }
+
+  /* ── TIMELINE ────────────────────────────────── */
+  .timeline { padding: 4px 0; }
+  .tl-item  { display: flex; gap: 12px; align-items: flex-start; }
+  .tl-left  { display: flex; flex-direction: column; align-items: center; }
+  .tl-dot   { width: 14px; height: 14px; border-radius: 50%; background: var(--p); flex-shrink: 0; margin-top: 3px; }
+  .tl-dot.g  { background: var(--g); }
+  .tl-dot.am { background: var(--am); }
+  .tl-dot.pk { background: var(--pk); width: 18px; height: 18px; box-shadow: 0 0 0 4px var(--pk-light); }
+  .tl-line  { width: 2px; flex: 1; min-height: 28px; background: repeating-linear-gradient(to bottom, #c4b5fd 0, #c4b5fd 4px, transparent 4px, transparent 8px); margin: 4px 0; }
+  .tl-body  { flex: 1; padding-bottom: 16px; }
+  .tl-time  { font-weight: 800; font-size: 0.93rem; }
+  .tl-add   { font-size: 0.78rem; color: var(--tx2); font-weight: 600; margin-top: 1px; }
+  .tl-note  { font-size: 0.78rem; color: var(--tx2); margin-top: 2px; }
+
+  /* ── ALTERNATIVAS ────────────────────────────── */
+  .alts { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+  .alt  { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 14px; border: 2px solid var(--border); font-size: 0.9rem; font-weight: 700; }
+  .alt.ok  { background: var(--g-light);  border-color: var(--g);  color: #065f46; }
+  .alt.nok { background: #f9fafb;         border-color: #e5e7eb;   color: #9ca3af; }
+  .alt-l   { width: 28px; height: 28px; border-radius: 50%; font-size: 0.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--p-light); color: var(--p); }
+  .alt.ok  .alt-l { background: var(--g);  color: white; }
+  .alt.nok .alt-l { background: #e5e7eb;   color: #9ca3af; }
+
+  /* ── MISC ────────────────────────────────────── */
+  .big-num { text-align: center; font-size: 2rem; font-weight: 900; color: var(--p); margin: 8px 0; letter-spacing: -1px; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 0.88rem; border-radius: 14px; overflow: hidden; }
+  .tbl th { padding: 10px 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.3px; }
+  .tbl th.p { background: var(--p-light); color: var(--p); } .tbl th.g { background: var(--g-light); color: var(--g); }
+  .tbl td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-weight: 500; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .score-bar-wrap  { background: #ede9fe; border-radius: 999px; height: 8px; margin: 8px 0 4px; overflow: hidden; }
+  .score-bar-fill  { height: 100%; background: linear-gradient(90deg, var(--p), var(--p2)); border-radius: 999px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  .score-txt { font-size: 0.8rem; color: var(--tx2); text-align: center; font-weight: 600; }
+  .enunciado { background: linear-gradient(150deg, #1e1b4b 0%, #312e81 100%); color: white; border-radius: 20px; padding: 20px; font-size: 0.88rem; line-height: 1.75; margin-bottom: 14px; font-weight: 400; box-shadow: 0 8px 24px rgba(30,27,75,0.2); }
+  .enunciado .tag { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .enunciado strong { color: #fcd34d; } .enunciado em { color: #67e8f9; font-style: normal; font-weight: 700; }
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+  .vs-cell { border-radius: 14px; padding: 14px 12px; font-size: 0.85rem; line-height: 1.6; font-weight: 500; }
+  .vs-cell.p { background: var(--p-light); } .vs-cell.g { background: var(--g-light); }
+  .vs-cell h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 6px; }
+  .vs-cell.p h4 { color: var(--p); } .vs-cell.g h4 { color: var(--g); }
+  p { line-height: 1.6; }
+  .mt  { margin-top: 10px; }
+  .mt8 { margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Colégio Militar · Preparatório</div>
+  <h1>MMC e MDC</h1>
+  <p>Revisão interativa passo a passo</p>
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="0">📚 Intro</button>
+  <button class="tab-btn"        data-tab="1">🔢 MDC</button>
+  <button class="tab-btn"        data-tab="2">✖️ MMC</button>
+  <button class="tab-btn"        data-tab="3">🏅 Olimpíadas</button>
+  <button class="tab-btn"        data-tab="4">🧪 Treino</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SEÇÃO 0 — INTRO                           -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section active" id="sec0">
+  <div class="hero-card roxo">
+    <h2>Vamos revisar juntos!</h2>
+    <p>Hoje você vai entender de vez a diferença entre MDC e MMC — e no final a gente resolve uma questão de prova real das Olimpíadas.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Qual é a diferença?</div>
+    <div class="box box-p">
+      <strong style="color:var(--p)">MDC</strong> — Máximo Divisor Comum<br>
+      É o <strong>maior número que divide</strong> os dois ao mesmo tempo, sem sobrar nada.<br>
+      <span style="color:var(--p); font-size:0.85rem">Pensa: o maior "pedaço" que cabe nos dois.</span>
+    </div>
+    <div class="box box-g mt">
+      <strong style="color:var(--g)">MMC</strong> — Mínimo Múltiplo Comum<br>
+      É o <strong>menor número que é múltiplo</strong> dos dois ao mesmo tempo.<br>
+      <span style="color:var(--g); font-size:0.85rem">Pensa: a menor "tabela" onde os dois se encontram.</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Como lembrar qual é qual?</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">D</div>
+        <div class="step-body"><strong>MDC = Divisor</strong> → divide os números. O resultado é sempre <strong>menor ou igual</strong> aos números.</div>
+      </div>
+      <div class="step">
+        <div class="step-dot g">M</div>
+        <div class="step-body"><strong>MMC = Múltiplo</strong> → é múltiplo dos números. O resultado é sempre <strong>maior ou igual</strong> aos números.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Quando usar cada um?</div>
+    <div class="vs-grid">
+      <div class="vs-cell p"><h4>MDC</h4>Quando quer <strong>dividir em partes iguais</strong> sem sobrar.<br><br>"Qual o maior pedaço?"</div>
+      <div class="vs-cell g"><h4>MMC</h4>Quando quer saber quando dois eventos <strong>coincidem de novo</strong>.<br><br>"Quando vai repetir junto?"</div>
+    </div>
+  </div>
+  <button class="btn btn-p" data-tab="1">Aprender MDC →</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SEÇÃO 1 — MDC                             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section" id="sec1">
+  <div class="hero-card roxo">
+    <h2>MDC — Máximo Divisor Comum</h2>
+    <p>O maior número que divide os dois ao mesmo tempo, sem sobrar nada.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Exemplo visual: MDC(12, 18)</div>
+    <p style="font-size:0.88rem; color:var(--tx2); font-weight:500; margin-bottom:8px">Divisores de cada número:</p>
+    <div class="chips">
+      <span class="chip-label" style="color:var(--p)">12:</span>
+      <span class="chip on-p">1</span><span class="chip on-p">2</span><span class="chip on-p">3</span>
+      <span class="chip">4</span><span class="chip on-p">6</span><span class="chip">12</span>
+    </div>
+    <div class="chips mt8">
+      <span class="chip-label" style="color:var(--g)">18:</span>
+      <span class="chip on-g">1</span><span class="chip on-g">2</span><span class="chip on-g">3</span>
+      <span class="chip on-g">6</span><span class="chip">9</span><span class="chip">18</span>
+    </div>
+    <div class="box box-am mt">
+      Divisores comuns: <strong>1, 2, 3, 6</strong><br>
+      O <strong>maior</strong> deles é o 6.<br>
+      Logo: <strong>MDC(12, 18) = 6</strong> ✅
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Método rápido: Fatoração</div>
+    <p style="font-size:0.88rem; color:var(--tx2); font-weight:500; margin-bottom:4px">Na prova, use a divisão por fatores primos — é muito mais rápido!</p>
+    <div class="factor-wrap">
+      <div class="factor-block">
+        <div class="factor-label" style="color:var(--p)">12 ÷</div>
+        <div class="fator-rows">
+          <div class="fator-row"><div class="fator-num">12</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+          <div class="fator-row"><div class="fator-num">6</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+          <div class="fator-row"><div class="fator-num">3</div><div class="fator-bar"></div><div class="fator-f">3</div></div>
+          <div class="fator-row"><div class="fator-num">1</div></div>
+        </div>
+        <div class="math-result">12 = <span class="hl">2² × 3</span></div>
+      </div>
+      <div class="factor-block">
+        <div class="factor-label" style="color:var(--g)">18 ÷</div>
+        <div class="fator-rows">
+          <div class="fator-row"><div class="fator-num">18</div><div class="fator-bar g"></div><div class="fator-f g">2</div></div>
+          <div class="fator-row"><div class="fator-num">9</div><div class="fator-bar g"></div><div class="fator-f g">3</div></div>
+          <div class="fator-row"><div class="fator-num">3</div><div class="fator-bar g"></div><div class="fator-f g">3</div></div>
+          <div class="fator-row"><div class="fator-num">1</div></div>
+        </div>
+        <div class="math-result">18 = <span class="hl2">2 × 3²</span></div>
+      </div>
+    </div>
+    <div class="box box-p">
+      <strong style="color:var(--p)">Regra do MDC:</strong> fatores <strong>comuns</strong>, expoente <strong>menor</strong>.<br><br>
+      • 2 está nos dois → menor: 2¹<br>
+      • 3 está nos dois → menor: 3¹<br><br>
+      <strong>MDC(12,18) = 2 × 3 = 6 ✅</strong>
+    </div>
+  </div>
+  <div class="card" id="quizMDC">
+    <div class="card-title"><span class="pill pill-p">Teste rápido</span></div>
+    <div class="quiz-q">Qual é o MDC(8, 12)?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-quiz="quizMDC" data-ok="0">2</button>
+      <button class="quiz-opt" data-quiz="quizMDC" data-ok="1">4</button>
+      <button class="quiz-opt" data-quiz="quizMDC" data-ok="0">6</button>
+      <button class="quiz-opt" data-quiz="quizMDC" data-ok="0">8</button>
+    </div>
+    <div class="quiz-fb" id="fb-quizMDC"></div>
+    <p class="quiz-hint">Dica: 8 = 2³ · 12 = 2² × 3 → fator comum: 2², menor expoente = 4</p>
+  </div>
+  <button class="btn btn-p" data-tab="2">Aprender MMC →</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SEÇÃO 2 — MMC                             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section" id="sec2">
+  <div class="hero-card verde">
+    <h2>MMC — Mínimo Múltiplo Comum</h2>
+    <p>O menor número que é múltiplo dos dois ao mesmo tempo.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Exemplo visual: MMC(4, 6)</div>
+    <p style="font-size:0.88rem; color:var(--tx2); font-weight:500; margin-bottom:8px">Múltiplos de cada número:</p>
+    <div class="chips">
+      <span class="chip-label" style="color:var(--p)">4:</span>
+      <span class="chip">4</span><span class="chip">8</span><span class="chip on-p">12</span>
+      <span class="chip">16</span><span class="chip">20</span><span class="chip on-p">24</span>
+    </div>
+    <div class="chips mt8">
+      <span class="chip-label" style="color:var(--g)">6:</span>
+      <span class="chip">6</span><span class="chip on-g">12</span>
+      <span class="chip">18</span><span class="chip on-g">24</span><span class="chip">30</span>
+    </div>
+    <div class="box box-g mt">
+      Múltiplos comuns: <strong>12, 24, 36…</strong><br>
+      O <strong>menor</strong> é o 12.<br>
+      Logo: <strong>MMC(4, 6) = 12</strong> ✅
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Método rápido: Fatoração</div>
+    <div class="factor-wrap">
+      <div class="factor-block">
+        <div class="factor-label" style="color:var(--p)">4 ÷</div>
+        <div class="fator-rows">
+          <div class="fator-row"><div class="fator-num">4</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+          <div class="fator-row"><div class="fator-num">2</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+          <div class="fator-row"><div class="fator-num">1</div></div>
+        </div>
+        <div class="math-result">4 = <span class="hl">2²</span></div>
+      </div>
+      <div class="factor-block">
+        <div class="factor-label" style="color:var(--g)">6 ÷</div>
+        <div class="fator-rows">
+          <div class="fator-row"><div class="fator-num">6</div><div class="fator-bar g"></div><div class="fator-f g">2</div></div>
+          <div class="fator-row"><div class="fator-num">3</div><div class="fator-bar g"></div><div class="fator-f g">3</div></div>
+          <div class="fator-row"><div class="fator-num">1</div></div>
+        </div>
+        <div class="math-result">6 = <span class="hl2">2 × 3</span></div>
+      </div>
+    </div>
+    <div class="box box-g">
+      <strong style="color:var(--g)">Regra do MMC:</strong> <strong>todos</strong> os fatores, expoente <strong>maior</strong>.<br><br>
+      • 2 → maior expoente: 2²<br>
+      • 3 → só no 6: 3¹<br><br>
+      <strong>MMC(4,6) = 2² × 3 = 4 × 3 = 12 ✅</strong>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">MDC × MMC — lado a lado</div>
+    <table class="tbl">
+      <tr><th class="p">MDC</th><th class="g">MMC</th></tr>
+      <tr><td>Fatores <strong>comuns</strong></td><td>Fatores <strong>todos</strong></td></tr>
+      <tr><td>Expoente <strong>menor</strong></td><td>Expoente <strong>maior</strong></td></tr>
+      <tr><td>Resultado <strong>≤</strong> aos números</td><td>Resultado <strong>≥</strong> aos números</td></tr>
+    </table>
+  </div>
+  <div class="card" id="quizMMC">
+    <div class="card-title"><span class="pill pill-g">Teste rápido</span></div>
+    <div class="quiz-q">Qual é o MMC(6, 9)?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-quiz="quizMMC" data-ok="0">3</button>
+      <button class="quiz-opt" data-quiz="quizMMC" data-ok="0">27</button>
+      <button class="quiz-opt" data-quiz="quizMMC" data-ok="1">18</button>
+      <button class="quiz-opt" data-quiz="quizMMC" data-ok="0">54</button>
+    </div>
+    <div class="quiz-fb" id="fb-quizMMC"></div>
+    <p class="quiz-hint">Dica: 6 = 2 × 3 · 9 = 3² → MMC = 2 × 3² = 18</p>
+  </div>
+  <button class="btn btn-g" data-tab="3">Ver a questão das Olimpíadas 🏅 →</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SEÇÃO 3 — OLIMPÍADAS                      -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section" id="sec3">
+  <div class="enunciado">
+    <div class="tag">Questão de Prova</div><br>
+    Em determinado dia, a diferença de tempo entre lutas de <strong>judô</strong> foi sempre de <em>28 minutos</em>. A diferença entre corridas de <strong>atletismo</strong> foi sempre de <em>24 minutos</em>.<br><br>
+    Judocas e corredores competiram simultaneamente às <strong>10h 52min</strong>.<br><br>
+    Qual foi o <strong>primeiro horário após as 17h</strong> em que algum judoca e algum corredor competiram ao mesmo tempo?
+  </div>
+
+  <div class="card">
+    <div class="passo-badge pb-p"><div class="num">1</div> Entendendo o problema</div>
+    <button class="btn btn-ghost" data-reveal="r1">👀 Revelar passo 1</button>
+    <div class="reveal-content" id="r1">
+      <div class="steps mt">
+        <div class="step"><div class="step-dot emoji">🥋</div><div class="step-body">Judô: lutas a cada <strong>28 minutos</strong></div></div>
+        <div class="step"><div class="step-dot emoji">🏃</div><div class="step-body">Atletismo: corridas a cada <strong>24 minutos</strong></div></div>
+        <div class="step"><div class="step-dot emoji">❓</div><div class="step-body">Queremos saber quando os dois <strong>coincidem de novo</strong></div></div>
+      </div>
+      <div class="box box-am mt"><strong>"Quando coincidem?"</strong> → isso é MMC! 🎯<br>Precisamos calcular o <strong>MMC(28, 24)</strong>.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="passo-badge pb-g"><div class="num">2</div> Calcular MMC(28, 24)</div>
+    <button class="btn btn-ghost" data-reveal="r2">👀 Revelar passo 2</button>
+    <div class="reveal-content" id="r2">
+      <div class="factor-wrap mt">
+        <div class="factor-block">
+          <div class="factor-label" style="color:var(--p)">28 ÷</div>
+          <div class="fator-rows">
+            <div class="fator-row"><div class="fator-num">28</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+            <div class="fator-row"><div class="fator-num">14</div><div class="fator-bar"></div><div class="fator-f">2</div></div>
+            <div class="fator-row"><div class="fator-num">7</div><div class="fator-bar"></div><div class="fator-f">7</div></div>
+            <div class="fator-row"><div class="fator-num">1</div></div>
+          </div>
+          <div class="math-result">28 = <span class="hl">2² × 7</span></div>
+        </div>
+        <div class="factor-block">
+          <div class="factor-label" style="color:var(--g)">24 ÷</div>
+          <div class="fator-rows">
+            <div class="fator-row"><div class="fator-num">24</div><div class="fator-bar g"></div><div class="fator-f g">2</div></div>
+            <div class="fator-row"><div class="fator-num">12</div><div class="fator-bar g"></div><div class="fator-f g">2</div></div>
+            <div class="fator-row"><div class="fator-num">6</div><div class="fator-bar g"></div><div class="fator-f g">2</div></div>
+            <div class="fator-row"><div class="fator-num">3</div><div class="fator-bar g"></div><div class="fator-f g">3</div></div>
+            <div class="fator-row"><div class="fator-num">1</div></div>
+          </div>
+          <div class="math-result">24 = <span class="hl2">2³ × 3</span></div>
+        </div>
+      </div>
+      <div class="box box-g">
+        <strong style="color:var(--g)">Todos os fatores, maior expoente:</strong><br>
+        • 2 → maior: 2³ = 8 · 3 → só no 24: 3¹ = 3 · 7 → só no 28: 7¹ = 7<br><br>
+        <strong>MMC(28, 24) = 8 × 3 × 7 = 168 minutos ✅</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="passo-badge pb-am"><div class="num">3</div> O que são 168 minutos?</div>
+    <button class="btn btn-ghost" data-reveal="r3">👀 Revelar passo 3</button>
+    <div class="reveal-content" id="r3">
+      <div class="box box-am mt">
+        168 min ÷ 60 = <strong>2 horas e 48 minutos</strong>.<br><br>
+        Ou seja: a cada <strong>2h 48min</strong>, um judoca e um corredor competem juntos de novo.
+      </div>
+      <p style="font-size:0.88rem; color:var(--tx2); margin-top:10px; font-weight:500">Agora somamos a partir de <strong>10h 52min</strong>:</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="passo-badge pb-pk"><div class="num">4</div> Achar o horário após as 17h</div>
+    <button class="btn btn-ghost" data-reveal="r4">👀 Revelar passo 4</button>
+    <div class="reveal-content" id="r4">
+      <div class="timeline mt">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-body"><div class="tl-time">Início: 10h 52min</div><div class="tl-add">+ 2h 48min</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot g"></div><div class="tl-line"></div></div>
+          <div class="tl-body"><div class="tl-time">1ª coincidência: 13h 40min</div><div class="tl-add">+ 2h 48min</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot am"></div><div class="tl-line"></div></div>
+          <div class="tl-body"><div class="tl-time">2ª coincidência: 16h 28min</div><div class="tl-note">ainda antes das 17h…</div><div class="tl-add">+ 2h 48min</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot pk"></div></div>
+          <div class="tl-body"><div class="tl-time" style="color:var(--pk); font-size:1.1rem">3ª coincidência: 19h 16min ✅</div><div class="tl-note">Primeira após as 17h!</div></div>
+        </div>
+      </div>
+      <div class="box box-pk mt">
+        <strong>Como calcular 16h 28min + 2h 48min?</strong><br>
+        28 + 48 = 76 min = 1h 16min<br>
+        16h + 2h + 1h = 19h, sobram 16 min → <strong>19h 16min</strong> ✅
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="respFinal" style="display:none">
+    <div class="card-title">Gabarito</div>
+    <div class="big-num">19h 16min</div>
+    <div class="alts">
+      <div class="alt nok"><div class="alt-l">A</div>17h 16min</div>
+      <div class="alt nok"><div class="alt-l">B</div>18h 04min</div>
+      <div class="alt ok" ><div class="alt-l">C</div>19h 16min — CORRETA!</div>
+      <div class="alt nok"><div class="alt-l">D</div>20h 12min</div>
+      <div class="alt nok"><div class="alt-l">E</div>22h 04min</div>
+    </div>
+  </div>
+
+  <button class="btn btn-pk" id="btnGabarito" data-action="gabarito">Ver a alternativa certa 🎯</button>
+  <button class="btn btn-p"  style="margin-top:10px" data-tab="4">Praticar mais questões →</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SEÇÃO 4 — TREINO                          -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section" id="sec4">
+  <div class="card">
+    <div class="card-title">Questões de Prova</div>
+    <p style="font-size:0.88rem; color:var(--tx2); font-weight:500">Tenta resolver sozinha antes de ver a explicação!</p>
+    <div class="score-bar-wrap mt8"><div class="score-bar-fill" id="scoreBar" style="width:0%"></div></div>
+    <div class="score-txt" id="scoreText">0 de 4 respondidas</div>
+  </div>
+
+  <div class="card" id="q1">
+    <div class="card-title"><span class="pill pill-p">Q1 — MDC</span></div>
+    <div class="quiz-q">Qual é o MDC(36, 48)?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-treino="q1" data-ok="0" data-msg="36=2²×3² e 48=2⁴×3. MDC = fatores comuns, menor expoente: 2²×3 = 12.">6</button>
+      <button class="quiz-opt" data-treino="q1" data-ok="1" data-msg="Perfeito! 36=2²×3² e 48=2⁴×3. MDC = 2²×3 = 12 ✅">12</button>
+      <button class="quiz-opt" data-treino="q1" data-ok="0" data-msg="36=2²×3² e 48=2⁴×3. MDC = fatores comuns, menor expoente: 2²×3 = 12.">18</button>
+      <button class="quiz-opt" data-treino="q1" data-ok="0" data-msg="36=2²×3² e 48=2⁴×3. MDC = fatores comuns, menor expoente: 2²×3 = 12.">24</button>
+    </div>
+    <div class="quiz-fb" id="fb-q1"></div>
+  </div>
+
+  <div class="card" id="q2">
+    <div class="card-title"><span class="pill pill-g">Q2 — MMC</span></div>
+    <div class="quiz-q">Qual é o MMC(15, 20)?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-treino="q2" data-ok="0" data-msg="15=3×5 e 20=2²×5. MMC = todos os fatores, maior expoente: 2²×3×5 = 60.">30</button>
+      <button class="quiz-opt" data-treino="q2" data-ok="0" data-msg="15=3×5 e 20=2²×5. MMC = todos os fatores, maior expoente: 2²×3×5 = 60.">5</button>
+      <button class="quiz-opt" data-treino="q2" data-ok="1" data-msg="Muito bem! 15=3×5 e 20=2²×5. MMC = 2²×3×5 = 60 ✅">60</button>
+      <button class="quiz-opt" data-treino="q2" data-ok="0" data-msg="15=3×5 e 20=2²×5. MMC = todos os fatores, maior expoente: 2²×3×5 = 60.">300</button>
+    </div>
+    <div class="quiz-fb" id="fb-q2"></div>
+  </div>
+
+  <div class="card" id="q3">
+    <div class="card-title"><span class="pill pill-pk">Q3 — Situação-problema</span></div>
+    <div class="quiz-q">Um ônibus passa a cada 12 min e outro a cada 18 min. Eles partiram juntos às 7h. Quando partem juntos de novo?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-treino="q3" data-ok="0" data-msg="MMC(12,18): 12=2²×3 e 18=2×3². MMC = 2²×3² = 36 min. 7h + 36min = 7h 36min.">7h 12min</button>
+      <button class="quiz-opt" data-treino="q3" data-ok="1" data-msg="Ótimo! MMC(12,18) = 36 min. 7h + 36min = 7h 36min ✅">7h 36min</button>
+      <button class="quiz-opt" data-treino="q3" data-ok="0" data-msg="MMC(12,18): 12=2²×3 e 18=2×3². MMC = 2²×3² = 36 min. 7h + 36min = 7h 36min.">7h 30min</button>
+      <button class="quiz-opt" data-treino="q3" data-ok="0" data-msg="MMC(12,18): 12=2²×3 e 18=2×3². MMC = 2²×3² = 36 min. 7h + 36min = 7h 36min.">8h 00min</button>
+    </div>
+    <div class="quiz-fb" id="fb-q3"></div>
+  </div>
+
+  <div class="card" id="q4">
+    <div class="card-title"><span class="pill pill-am">Q4 — Desafio</span></div>
+    <div class="quiz-q">Uma professora quer dividir 30 canetas e 42 lápis em grupos iguais, sem sobrar nada. Qual é o maior número de grupos possível?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-treino="q4" data-ok="0" data-msg="Dividir igualmente sem sobrar = MDC. MDC(30,42): 30=2×3×5 e 42=2×3×7. MDC = 2×3 = 6.">5</button>
+      <button class="quiz-opt" data-treino="q4" data-ok="1" data-msg="Incrível! Dividir em partes iguais = MDC. MDC(30,42) = 2×3 = 6 grupos ✅">6</button>
+      <button class="quiz-opt" data-treino="q4" data-ok="0" data-msg="Dividir igualmente sem sobrar = MDC. MDC(30,42): 30=2×3×5 e 42=2×3×7. MDC = 2×3 = 6.">7</button>
+      <button class="quiz-opt" data-treino="q4" data-ok="0" data-msg="Dividir igualmente sem sobrar = MDC. MDC(30,42): 30=2×3×5 e 42=2×3×7. MDC = 2×3 = 6.">3</button>
+    </div>
+    <div class="quiz-fb" id="fb-q4"></div>
+  </div>
+
+  <div class="card" id="parabens" style="display:none; text-align:center">
+    <div style="font-size:2.5rem; margin-bottom:8px">🎉</div>
+    <div style="font-size:1.2rem; font-weight:900; color:var(--p); margin-bottom:6px">Parabéns!</div>
+    <p style="font-size:0.9rem; color:var(--tx2); font-weight:500">Você completou a revisão de MMC e MDC.<br>Você está pronta para a prova! 💪</p>
+    <button class="btn btn-p" style="margin-top:14px" data-tab="0">Revisar do início</button>
+  </div>
+</div>
+
+<script>
+  const secoes = document.querySelectorAll('.section');
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const progs  = [20, 40, 60, 80, 100];
+  let scores   = { q1: null, q2: null, q3: null, q4: null };
+
+  function goTab(i) {
+    secoes.forEach(function(s, j) { s.classList.toggle('active', j === i); });
+    tabs.forEach(function(t, j)   { t.classList.toggle('active', j === i); });
+    document.getElementById('progressFill').style.width = progs[i] + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function revelar(id, btn) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('show');
+    if (btn) btn.style.display = 'none';
+  }
+
+  function responder(btn, ok, quizId) {
+    var card = document.getElementById(quizId);
+    card.querySelectorAll('.quiz-opt').forEach(function(o) { o.disabled = true; });
+    btn.classList.add(ok ? 'ok' : 'nok');
+    var fb = document.getElementById('fb-' + quizId);
+    fb.className = 'quiz-fb show ' + (ok ? 'ok' : 'nok');
+    fb.innerHTML = ok
+      ? '✅ <strong>Certo!</strong> Muito bem!'
+      : '❌ <strong>Quase!</strong> Tente calcular passo a passo. Você consegue!';
+  }
+
+  function responderTreino(btn, ok, qId, msg) {
+    if (scores[qId] !== null) return;
+    scores[qId] = ok;
+    document.getElementById(qId).querySelectorAll('.quiz-opt').forEach(function(o) { o.disabled = true; });
+    btn.classList.add(ok ? 'ok' : 'nok');
+    var fb = document.getElementById('fb-' + qId);
+    fb.className = 'quiz-fb show ' + (ok ? 'ok' : 'nok');
+    fb.innerHTML = (ok ? '✅ ' : '❌ Ops! ') + msg;
+    atualizarScore();
+  }
+
+  function atualizarScore() {
+    var vals = Object.values(scores);
+    var respondidas = vals.filter(function(v) { return v !== null; }).length;
+    var certas      = vals.filter(function(v) { return v === true; }).length;
+    document.getElementById('scoreBar').style.width  = (respondidas / 4 * 100) + '%';
+    document.getElementById('scoreText').textContent = certas + ' de ' + respondidas + ' corretas';
+    if (respondidas === 4) document.getElementById('parabens').style.display = 'block';
+  }
+
+  function mostrarGabarito() {
+    document.getElementById('respFinal').style.display   = 'block';
+    document.getElementById('btnGabarito').style.display = 'none';
+    document.getElementById('respFinal').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /* ── EVENT DELEGATION (funciona em todos os ambientes iOS) ── */
+  var touchStartX = 0, touchStartY = 0;
+
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  function handleBtn(btn) {
+    if (!btn || btn.disabled) return;
+    var d = btn.dataset;
+    if (d.tab      !== undefined) { goTab(+d.tab); }
+    else if (d.reveal)            { revelar(d.reveal, btn); }
+    else if (d.quiz)              { responder(btn, d.ok === '1', d.quiz); }
+    else if (d.treino)            { responderTreino(btn, d.ok === '1', d.treino, d.msg); }
+    else if (d.action === 'gabarito') { mostrarGabarito(); }
+  }
+
+  /* touchend: resposta imediata no iOS, sem delay de 300ms */
+  document.addEventListener('touchend', function(e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+    var dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    if (dx > 10 || dy > 10) return; /* era scroll, não tap */
+    e.preventDefault(); /* evita disparo duplo com click */
+    handleBtn(btn);
+  }, { passive: false });
+
+  /* click: fallback para desktop e outros navegadores */
+  document.addEventListener('click', function(e) {
+    handleBtn(e.target.closest('button'));
+  });
+</script>
+
+</body>
+</html>
